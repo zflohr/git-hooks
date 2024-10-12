@@ -39,6 +39,25 @@ print_filesystem_location() {
     } || echo -e ${location}
 }
 
+update_external_git_repo() {
+    if (( ${#added[*]} || ${#modified[*]} || ${#deleted[*]} )); then
+        local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
+        (( ${#added[*]} || ${#modified[*]} )) &&
+            cp ${added[*]} ${modified[*]} ${1}
+        cd ${1}; print_filesystem_location "${1}"
+        (( ${#added[*]} || ${#modified[*]} )) &&
+            print_commit_progress "add" &&
+            git add -v \
+                $(basename -a ${added[*]} ${modified[*]} | paste -s -d ' ')
+        (( ${#deleted[*]} )) &&
+            print_commit_progress "rm" "${deleted[*]}" &&
+            git rm $(basename -a ${deleted[*]} | paste -s -d ' ')
+        print_commit_progress "commit"
+        git commit -m "${COMMIT_MESSAGE}"
+        cd - > /dev/null
+    fi
+}
+
 get_diff_output() {
     [ -d ${1} ] && [ -d ${GIT_REPO_TO_SOURCE_DIR_MAP["${1}"]} ] || return 0
     local -a diff_statuses=($(git show --no-renames --name-status \
@@ -57,22 +76,7 @@ get_diff_output() {
             ;;
         esac
     done
-    if (( ${#added[*]} || ${#modified[*]} || ${#deleted[*]} )); then
-        local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
-        (( ${#added[*]} || ${#modified[*]} )) &&
-            cp ${added[*]} ${modified[*]} ${1}
-        cd ${1}; print_filesystem_location "${1}"
-        (( ${#added[*]} || ${#modified[*]} )) &&
-            print_commit_progress "add" &&
-            git add -v \
-                $(basename -a ${added[*]} ${modified[*]} | paste -s -d ' ')
-        (( ${#deleted[*]} )) &&
-            print_commit_progress "rm" "${deleted[*]}" &&
-            git rm $(basename -a ${deleted[*]} | paste -s -d ' ')
-        print_commit_progress "commit"
-        git commit -m "${COMMIT_MESSAGE}"
-        cd - > /dev/null
-    fi
+    update_external_git_repo ${1}
 }
 
 main() {
