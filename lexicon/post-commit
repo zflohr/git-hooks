@@ -57,9 +57,6 @@ get_diff_output() {
             ;;
         esac
     done
-    declare -p added
-    declare -p modified
-    declare -p deleted
     if (( ${#added[*]} || ${#modified[*]} || ${#deleted[*]} )); then
         local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
         (( ${#added[*]} || ${#modified[*]} )) &&
