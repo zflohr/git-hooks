@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# This script is run by Git during the post-commit hook. It allows for
+# updating the commit history of Git repositories that exist outside of
+# the Git repository that contains this script. The paths of the
+# external repositories to be updated are specified as keys in the
+# associative array GIT_REPO_TO_SOURCE_DIR_MAP; the value of each key is
+# the path of the source directory of the main Git repository whence
+# file diffs are replicated to the external repository whose path is the
+# key. File diffs are replicated at the commit level.
+
 declare -Ar GIT_REPO_TO_SOURCE_DIR_MAP=(
     ["${HOME}/github/bootstraps/"]="shell-scripts/bootstraps/"
     ["${HOME}/github/git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
