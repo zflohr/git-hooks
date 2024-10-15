@@ -2,17 +2,12 @@
 
 # This script is run by Git during the post-commit hook. It allows for
 # updating the commit history of Git repositories that exist outside of
-# the Git repository that contains this script. The paths of the
-# external repositories to be updated are specified as keys in the
-# associative array GIT_REPO_TO_SOURCE_DIR_MAP; the value of each key is
-# the path of the source directory of the main Git repository whence
-# file diffs are replicated to the external repository whose path is the
-# key. File diffs are replicated at the commit level.
-
-declare -Ar GIT_REPO_TO_SOURCE_DIR_MAP=(
-    ["${HOME}/github/bootstraps/"]="shell-scripts/bootstraps/"
-    ["${HOME}/github/git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
-)
+# the Git repository that contains this script. The external
+# repositories to be updated and the source directories of the main Git
+# repository whence the external repositories receive their updates are
+# specified in a script that gets sourced herein. Updates to the
+# external repositories occur via file-diff replication at the commit
+# level.
 
 print_commit_progress() {
     local progress_msg
@@ -89,6 +84,7 @@ get_diff_output() {
 }
 
 main() {
+    . shell-scripts/git-hooks/external_git_repos.sh
     for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done
