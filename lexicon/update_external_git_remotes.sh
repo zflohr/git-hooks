@@ -14,7 +14,7 @@ print_git_progress() {
             progress_msg="\nFetching refs from: ${2}"
         ;;
         'rev-list')
-            progress_msg="\n${2[0]} ahead of ${2[1]} by ${3} commits."
+            progress_msg="\n${2} ahead of ${3} by ${4} commits."
         ;;
         'push')
             progress_msg="\nPushing to ${2}"
@@ -39,7 +39,8 @@ push_to_remote_repo() {
     print_filesystem_location "${1}"
     print_git_progress "fetch" "${REMOTE_URL}"
     git -C "${1}" fetch
-    print_git_progress "rev-list" "${REFNAMES}" "${SYM_DIFF[0]}"
+    print_git_progress "rev-list" "${REFNAMES[0]}"\
+        "${REFNAMES[1]}" "${SYM_DIFF[0]}"
     (( ${SYM_DIFF[0]} )) && print_git_progress "push" "${REMOTE_URL}" &&
         git -C "${1}" push
 }
@@ -53,4 +54,4 @@ main() {
     print_filesystem_location "$(pwd)/"
 }
 
-#main
+main

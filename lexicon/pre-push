@@ -1,7 +1,3 @@
 #!/usr/bin/env bash
 
 shell-scripts/git-hooks/update_external_git_remotes.sh
-echo params: $*
-read lala
-echo to-be-updated-refs: ${lala}
-exit 1
