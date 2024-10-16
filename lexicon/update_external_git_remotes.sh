@@ -41,17 +41,19 @@ push_to_remote_repo() {
     git -C "${1}" fetch
     print_git_progress "rev-list" "${REFNAMES[0]}"\
         "${REFNAMES[1]}" "${SYM_DIFF[0]}"
-    (( ${SYM_DIFF[0]} )) && print_git_progress "push" "${REMOTE_URL}" &&
-        git -C "${1}" push
+    [ "${1}" == "$(pwd)/" ] && print_git_progress "push" "${REMOTE_URL}" || {
+        (( ${SYM_DIFF[0]} )) &&
+            print_git_progress "push" "${REMOTE_URL}" &&
+            git -C "${1}" push
+    }
 }
 
 main() {
     . shell-scripts/git-hooks/external_git_repos.sh
     . shell-scripts/git-hooks/notifications.sh
-    for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}"; do
+    for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}" "$(pwd)/"; do
         push_to_remote_repo "${git_repo}"
     done
-    print_filesystem_location "$(pwd)/"
 }
 
 main
