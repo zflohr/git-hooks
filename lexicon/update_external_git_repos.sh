@@ -9,7 +9,7 @@
 # external repositories occur via file-diff replication at the commit
 # level.
 
-print_commit_progress() {
+print_git_progress() {
     local progress_msg
     case "${1}" in
         'add')
@@ -39,13 +39,13 @@ update_external_git_repo() {
             cp ${added[*]} ${modified[*]} ${1}
         cd ${1}; print_filesystem_location "${1}"
         (( ${#added[*]} || ${#modified[*]} )) &&
-            print_commit_progress "add" &&
+            print_git_progress "add" &&
             git add -v \
                 $(basename -a ${added[*]} ${modified[*]} | paste -s -d ' ')
         (( ${#deleted[*]} )) &&
-            print_commit_progress "rm" "${deleted[*]}" &&
+            print_git_progress "rm" "${deleted[*]}" &&
             git rm $(basename -a ${deleted[*]} | paste -s -d ' ')
-        print_commit_progress "commit"
+        print_git_progress "commit"
         git commit -m "${COMMIT_MESSAGE}"
         cd - > /dev/null
     fi
@@ -79,6 +79,7 @@ main() {
         get_diff_output "${git_repo}"
     done
     print_filesystem_location "$(pwd)/"
+    print_git_progress "commit"
 }
 
 main
