@@ -8,4 +8,4 @@ Git hooks that update this repository are located herein.
 ## Contributing
 
 This is not an open source project. I've made the repository public mainly to
-evidence my skills in Git, Bash, and workflow automation.
+evidence my skills in Git, Bash, GNU utilities, and workflow automation.
