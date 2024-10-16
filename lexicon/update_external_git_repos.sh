@@ -32,17 +32,6 @@ print_commit_progress() {
     } || echo -e ${progress_msg}
 }
 
-print_filesystem_location() {
-    local location="\nIn ${1}"
-    tput -V &> /dev/null && {
-        tput sgr0 2> /dev/null      # Turn off all attributes
-        tput bold 2> /dev/null      # Turn on bold mode
-        tput setaf 11 2> /dev/null   # Set foreground color to gold
-        echo -e ${location}
-        tput sgr0 2> /dev/null      # Turn off all attributes
-    } || echo -e ${location}
-}
-
 update_external_git_repo() {
     if (( ${#added[*]} || ${#modified[*]} || ${#deleted[*]} )); then
         local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
@@ -85,6 +74,7 @@ get_diff_output() {
 
 main() {
     . shell-scripts/git-hooks/external_git_repos.sh
+    . shell-scripts/git-hooks/notifications.sh
     for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done
