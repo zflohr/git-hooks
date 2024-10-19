@@ -4,11 +4,14 @@ print_message() {
     local -r MESSAGE="\n${3}"
     local -i FOREGROUND_COLOR=7
     case "${2}" in
-        'gold')
-            FOREGROUND_COLOR=11
-        ;;
         'red')
             FOREGROUND_COLOR=1
+        ;;
+        'cyan')
+            FOREGROUND_COLOR=6
+        ;;
+        'gold')
+            FOREGROUND_COLOR=11
         ;;
         [[:digit:]]*)
             FOREGROUND_COLOR=${2}
