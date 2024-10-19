@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-
+#
+# Author: Zachary Flohr
+#
 # This script is run by Git during the post-commit hook. It allows for
 # updating the commit history of Git repositories that exist outside of
 # the Git repository that contains this script. The external

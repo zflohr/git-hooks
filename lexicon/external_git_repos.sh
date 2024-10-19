@@ -1,3 +1,5 @@
+# Author: Zachary Flohr
+#
 # Specify the paths of external Git repositories to be updated during
 # Git hooks as keys in the associative array GIT_REPO_TO_SOURCE_DIR_MAP.
 # The value of each key is the path of the source directory of the main

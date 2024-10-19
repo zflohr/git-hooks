@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-
+#
+# Author: Zachary Flohr
+#
 # This script is run by Git during the pre-push hook. It allows for
 # updating remote references of Git repositories that exist outside of
 # the Git repository tht contains this script. The external repositories
