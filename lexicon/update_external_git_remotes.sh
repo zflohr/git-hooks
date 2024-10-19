@@ -2,8 +2,7 @@
 #
 # Author: Zachary Flohr
 #
-# This script is run by Git during the pre-push hook. It allows for
-# updating remote references of Git repositories that exist outside of
+# Update remote references of Git repositories that exist outside of
 # the Git repository tht contains this script. The external repositories
 # to be updated are specified in a script that gets sourced herein.
 # Updates to the external repositories occur via pushes to upstream
