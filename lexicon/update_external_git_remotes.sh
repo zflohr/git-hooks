@@ -36,7 +36,7 @@ push_to_remote_repo() {
                 git symbolic-ref HEAD)))
     local -ar REFNAMES=($(git -C "${1}" rev-parse --symbolic-full-name @ @{u}))
     local -ar SYM_DIFF=($(git -C "${1}" rev-list --left-right --count @...@{u}))
-    print_filesystem_location "${1}"
+    print_message 0 "gold" "In ${1}"
     print_git_progress "fetch" "${REMOTE_URL}"
     git -C "${1}" fetch
     print_git_progress "rev-list" "${REFNAMES[0]}"\
@@ -50,7 +50,7 @@ push_to_remote_repo() {
 
 main() {
     . shell-scripts/git-hooks/external_git_repos.sh
-    . shell-scripts/git-hooks/notifications.sh
+    . shell-scripts/shared/notifications.sh
     for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}" "$(pwd)/"; do
         push_to_remote_repo "${git_repo}"
     done

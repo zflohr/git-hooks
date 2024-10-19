@@ -37,7 +37,7 @@ update_external_git_repo() {
         local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
         (( ${#added[*]} || ${#modified[*]} )) &&
             cp ${added[*]} ${modified[*]} ${1}
-        cd ${1}; print_filesystem_location "${1}"
+        cd ${1}; print_message 0 "gold" "In ${1}"
         (( ${#added[*]} || ${#modified[*]} )) &&
             print_git_progress "add" &&
             git add -v \
@@ -74,11 +74,11 @@ get_diff_output() {
 
 main() {
     . shell-scripts/git-hooks/external_git_repos.sh
-    . shell-scripts/git-hooks/notifications.sh
+    . shell-scripts/shared/notifications.sh
     for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done
-    print_filesystem_location "$(pwd)/"
+    print_message 0 "gold" "In $(pwd)/"
     print_git_progress "commit"
 }
 

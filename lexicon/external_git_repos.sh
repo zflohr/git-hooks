@@ -5,7 +5,9 @@
 # are replicated during the post-commit hook to the external repository
 # whose path is the key.
 
+declare -r GIT_DIR="${HOME}/github/"
 declare -Ar GIT_REPO_TO_SOURCE_DIR_MAP=(
-    ["${HOME}/github/bootstraps/"]="shell-scripts/bootstraps/"
-    ["${HOME}/github/git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
+    ["${GIT_DIR}bootstraps/"]="shell-scripts/bootstraps/"
+    ["${GIT_DIR}git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
+    ["${GIT_DIR}git-hooks/$(basename $(pwd))/shared/"]="shell-scripts/shared/"
 )
