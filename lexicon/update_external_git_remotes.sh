@@ -9,25 +9,18 @@
 # branches on tracked remote repositories.
 
 print_git_progress() {
-    local progress_msg
     case "${1}" in
         'fetch')
-            progress_msg="\nFetching refs from: ${2}"
+            local -r PROGRESS_MSG="\nFetching refs from: ${2}"
         ;;
         'rev-list')
-            progress_msg="\n${2} ahead of ${3} by ${4} commits."
+            local -r PROGRESS_MSG="\n${2} ahead of ${3} by ${4} commits."
         ;;
         'push')
-            progress_msg="\nPushing to ${2}"
+            local -r PROGRESS_MSG="\nPushing to ${2}"
         ;;
     esac
-    tput -V &> /dev/null && {
-        tput sgr0 2> /dev/null      # Turn off all attributes
-        tput bold 2> /dev/null      # Turn on bold mode
-        tput setaf 6 2> /dev/null   # Set foreground color to cyan
-        echo -e ${progress_msg}
-        tput sgr0 2> /dev/null      # Turn off all attributes
-    } || echo -e ${progress_msg}
+    print_message 0 "cyan" "${PROGRESS_MSG}"
 }
 
 push_to_remote_repo() {

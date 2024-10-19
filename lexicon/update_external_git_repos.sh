@@ -12,26 +12,20 @@
 # level.
 
 print_git_progress() {
-    local progress_msg
     case "${1}" in
         'add')
-            progress_msg="\nAdding the following files to the staging index:"
+            local -r PROGRESS_MSG="\nAdding the following files
+                to the staging index:"
         ;;
         'commit')
-            progress_msg="\nCreating a new commit..."
+            local -r PROGRESS_MSG="\nCreating a new commit..."
         ;;
         'rm')
-            progress_msg="\nRemoving the following files
+            local -r PROGRESS_MSG="\nRemoving the following files
                 from the staging index and the working tree:"
         ;;
     esac
-    tput -V &> /dev/null && {
-        tput sgr0 2> /dev/null      # Turn off all attributes
-        tput bold 2> /dev/null      # Turn on bold mode
-        tput setaf 6 2> /dev/null   # Set foreground color to cyan
-        echo -e ${progress_msg}
-        tput sgr0 2> /dev/null      # Turn off all attributes
-    } || echo -e ${progress_msg}
+    print_message 0 "cyan" "${PROGRESS_MSG}"
 }
 
 update_external_git_repo() {
