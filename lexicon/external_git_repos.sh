@@ -7,7 +7,7 @@
 
 declare -r GIT_DIR="${HOME}/github/"
 declare -Ar GIT_REPO_TO_SOURCE_DIR_MAP=(
-    ["${GIT_DIR}bootstraps/"]="shell-scripts/bootstraps/"
+    ["${GIT_DIR}bootstraps/bootstraps/"]="shell-scripts/bootstraps/"
     ["${GIT_DIR}git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
     ["${GIT_DIR}git-hooks/$(basename $(pwd))/shared/"]="shell-scripts/shared/"
 )
