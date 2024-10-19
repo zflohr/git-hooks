@@ -2,8 +2,7 @@
 #
 # Author: Zachary Flohr
 #
-# This script is run by Git during the post-commit hook. It allows for
-# updating the commit history of Git repositories that exist outside of
+# Update the commit history of Git repositories that exist outside of
 # the Git repository that contains this script. The external
 # repositories to be updated and the source directories of the main Git
 # repository whence the external repositories receive their updates are
