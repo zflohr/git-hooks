@@ -61,7 +61,14 @@ get_diff_output() {
             ;;
         esac
     done
-    update_external_git_repo ${1}
+    ! (( ${#added[*]} || ${#deleted[*]} || ${#modified[*]} )) || {
+        local -r LAST_STASH_ENTRY_BEFORE=$(git stash list -1 --format=%H)
+        ! (( ${#modified[*]} )) || git stash push --quiet -- ${modified[*]}
+        local -r LAST_STASH_ENTRY_AFTER=$(git stash list -1 --format=%H)
+        update_external_git_repo ${1}
+        [[ ${LAST_STASH_ENTRY_BEFORE} == ${LAST_STASH_ENTRY_AFTER} ]] ||
+            git stash pop --quiet --index
+    }
 }
 
 main() {
