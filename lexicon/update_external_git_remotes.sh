@@ -36,9 +36,10 @@ push_to_remote_repo() {
     print_git_progress "rev-list" "${REFNAMES[0]}"\
         "${REFNAMES[1]}" "${SYM_DIFF[0]}"
     [ "${1}" == "$(pwd)/" ] && print_git_progress "push" "${REMOTE_URL}" || {
-        (( ${SYM_DIFF[0]} )) &&
+        ! (( ${SYM_DIFF[0]} )) || {
             print_git_progress "push" "${REMOTE_URL}" &&
-            git -C "${1}" push || terminate "git" "push" $?
+                git -C "${1}" push || terminate "git" "push" $?
+        }
     }
 }
 
