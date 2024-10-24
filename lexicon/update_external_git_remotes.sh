@@ -32,13 +32,13 @@ push_to_remote_repo() {
     local -ar SYM_DIFF=($(git -C "${1}" rev-list --left-right --count @...@{u}))
     print_message 0 "gold" "In ${1}"
     print_git_progress "fetch" "${REMOTE_URL}"
-    git -C "${1}" fetch
+    git -C "${1}" fetch || terminate "git" "fetch" $?
     print_git_progress "rev-list" "${REFNAMES[0]}"\
         "${REFNAMES[1]}" "${SYM_DIFF[0]}"
     [ "${1}" == "$(pwd)/" ] && print_git_progress "push" "${REMOTE_URL}" || {
         (( ${SYM_DIFF[0]} )) &&
             print_git_progress "push" "${REMOTE_URL}" &&
-            git -C "${1}" push
+            git -C "${1}" push || terminate "git" "push" $?
     }
 }
 
