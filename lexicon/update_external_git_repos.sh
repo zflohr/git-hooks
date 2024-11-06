@@ -11,33 +11,37 @@
 # level.
 
 print_git_progress() {
+    local progress_msg
     case "${1}" in
         'add')
-            local -r PROGRESS_MSG="\nAdding the following files
-                to the staging index:"
+            progress_msg="Adding the following files to "
+            progress_msg+="the staging index:\n${2}"
         ;;
         'commit')
-            local -r PROGRESS_MSG="\nCreating a new commit..."
+            progress_msg="Creating a new commit..."
         ;;
         'rm')
-            local -r PROGRESS_MSG="\nRemoving the following files
-                from the staging index and the working tree:"
+            progress_msg="Removing the following files from the staging "
+            progress_msg+="index and the working tree:\n${2}"
         ;;
     esac
-    print_message 0 "cyan" "${PROGRESS_MSG}"
+    print_message 0 "cyan" "${progress_msg}"
 }
 
 update_external_git_repo() {
     local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
+    local -ar ADDED_MODIFIED=(${added[*]} ${modified[*]})
+    local basenames
     print_message 0 "gold" "In ${1}"
-    (( ${#added[*]} || ${#modified[*]} )) &&
-        cp ${added[*]} ${modified[*]} ${1} &&
-        print_git_progress "add" &&
-        git -C "${1}" add -v \
-            $(basename -a ${added[*]} ${modified[*]} | paste -s -d ' ')
+    (( ${#ADDED_MODIFIED[*]} )) &&
+        cp ${ADDED_MODIFIED[*]} ${1} &&
+        basenames=$(basename -a ${ADDED_MODIFIED[*]}) &&
+        print_git_progress "add" "${basenames}" &&
+        git -C "${1}" add $(echo ${basenames})
     (( ${#deleted[*]} )) &&
-        print_git_progress "rm" "${deleted[*]}" &&
-        git -C "${1}" rm $(basename -a ${deleted[*]} | paste -s -d ' ')
+        basenames=$(basename -a ${deleted[*]}) &&
+        print_git_progress "rm" "${basenames}" &&
+        git -C "${1}" rm -q $(echo ${basenames})
     print_git_progress "commit"
     git -C "${1}" commit -m "${COMMIT_MESSAGE}"
 }
