@@ -29,18 +29,17 @@ print_git_progress() {
 
 update_external_git_repo() {
     local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
-    (( ${#added[*]} || ${#modified[*]} )) && cp ${added[*]} ${modified[*]} ${1}
-    cd ${1}; print_message 0 "gold" "In ${1}"
+    print_message 0 "gold" "In ${1}"
     (( ${#added[*]} || ${#modified[*]} )) &&
+        cp ${added[*]} ${modified[*]} ${1} &&
         print_git_progress "add" &&
-        git add -v \
+        git -C "${1}" add -v \
             $(basename -a ${added[*]} ${modified[*]} | paste -s -d ' ')
     (( ${#deleted[*]} )) &&
         print_git_progress "rm" "${deleted[*]}" &&
-        git rm $(basename -a ${deleted[*]} | paste -s -d ' ')
+        git -C "${1}" rm $(basename -a ${deleted[*]} | paste -s -d ' ')
     print_git_progress "commit"
-    git commit -m "${COMMIT_MESSAGE}"
-    cd - > /dev/null
+    git -C "${1}" commit -m "${COMMIT_MESSAGE}"
 }
 
 get_diff_output() {
