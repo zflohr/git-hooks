@@ -8,9 +8,7 @@
 # whose path is the key.
 
 declare -r GIT_DIR="${HOME}/github/"
-declare -Ar GIT_REPO_TO_SOURCE_DIR_MAP=(
-    ["${GIT_DIR}bootstraps/bootstraps/"]="shell-scripts/bootstraps/"
-    ["${GIT_DIR}bootstraps/shared/"]="shell-scripts/shared/"
-    ["${GIT_DIR}git-hooks/$(basename $(pwd))/"]="shell-scripts/git-hooks/"
-    ["${GIT_DIR}git-hooks/$(basename $(pwd))/shared/"]="shell-scripts/shared/"
+declare -Ar EXTERNAL_REPO_MAP=(
+    ["${GIT_DIR}bootstraps/"]="${GIT_DIR}verbosely/bootstraps/"
+    ["${GIT_DIR}git-hooks/verbosely/"]="${GIT_DIR}verbosely/git-hooks/"
 )

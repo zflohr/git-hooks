@@ -32,12 +32,19 @@ update_external_git_repo() {
     local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
     local -ar ADDED_MODIFIED=(${added[*]} ${modified[*]})
     local basenames
-    print_message 0 "gold" "In ${1}"
-    (( ${#ADDED_MODIFIED[*]} )) &&
-        cp ${ADDED_MODIFIED[*]} ${1} &&
-        basenames=$(basename -a ${ADDED_MODIFIED[*]}) &&
-        print_git_progress "add" "${basenames}" &&
-        git -C "${1}" add $(echo ${basenames})
+    print_message 0 "gold" "In git repository ${1}"
+    (( ${#added[*]} )) && {
+        pushd ${1} > /dev/null
+        mkdir --parents $(dirname ${added[*]})
+        popd > /dev/null
+    }
+    (( ${#ADDED_MODIFIED[*]} )) && {
+        for file in ${ADDED_MODIFIED[*]}; do
+            cp ${file} ${1}$(dirname ${file})
+        done
+        print_git_progress "add" "${ADDED_MODIFIED[*]}"
+        git -C "${1}" add ${ADDED_MODIFIED[*]}
+    }
     (( ${#deleted[*]} )) &&
         basenames=$(basename -a ${deleted[*]}) &&
         print_git_progress "rm" "${basenames}" &&
@@ -47,9 +54,12 @@ update_external_git_repo() {
 }
 
 get_diff_output() {
-    [ -d ${1} ] && [ -d ${GIT_REPO_TO_SOURCE_DIR_MAP["${1}"]} ] || return 0
+    [ -d ${1} ] && [ -d ${EXTERNAL_REPO_MAP["${1}"]} ] &&
+        [ $(git -C "${EXTERNAL_REPO_MAP["${1}"]}" rev-parse --show-toplevel) ==\
+            $(git rev-parse --show-toplevel) ] || return
+    pushd ${EXTERNAL_REPO_MAP["${1}"]} > /dev/null
     local -a diff_statuses=($(git show --no-renames --name-status \
-        --pretty=format:"%N" HEAD -- ${GIT_REPO_TO_SOURCE_DIR_MAP["${1}"]}))
+        --pretty=format:"%N" HEAD))
     local -a added=() deleted=() modified=()
     for (( i=0; ${#diff_statuses[*]} - i; i+=2 )); do
         case "${diff_statuses[i]}" in
@@ -72,12 +82,12 @@ get_diff_output() {
         [[ ${LAST_STASH_ENTRY_BEFORE} == ${LAST_STASH_ENTRY_AFTER} ]] ||
             git stash pop --quiet --index
     }
+    popd > /dev/null
 }
 
 main() {
-    . shell-scripts/git-hooks/external_git_repos.sh
-    . shell-scripts/shared/notifications.sh
-    for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}"; do
+    . shared/external_git_repos.sh; . shared/notifications.sh
+    for git_repo in "${!EXTERNAL_REPO_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done
     print_message 0 "gold" "In $(pwd)/"
