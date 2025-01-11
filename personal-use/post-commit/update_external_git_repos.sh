@@ -68,7 +68,8 @@ get_diff_output() {
 }
 
 main() {
-    . ../shared/external_git_repos.sh; . ../shared/notifications.sh
+    . $(dirname ${0})/../shared/external_git_repos.sh
+    . $(dirname ${0})/../shared/notifications.sh
     for git_repo in "${!EXTERNAL_REPO_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done
