@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-#
-# Author: Zachary Flohr
-
-shell-scripts/git-hooks/update_external_git_remotes.sh
