@@ -10,24 +10,6 @@
 # external repositories occur via file-diff replication at the commit
 # level.
 
-print_git_progress() {
-    local progress_msg
-    case "${1}" in
-        'add')
-            progress_msg="Adding the following files to "
-            progress_msg+="the staging index:\n${2}"
-        ;;
-        'commit')
-            progress_msg="Creating a new commit..."
-        ;;
-        'rm')
-            progress_msg="Removing the following files from the staging "
-            progress_msg+="index and the working tree:\n${2}"
-        ;;
-    esac
-    print_message 0 "cyan" "${progress_msg}"
-}
-
 update_external_git_repo() {
     local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
     local -ar ADDED_MODIFIED=(${added[*]} ${modified[*]})
@@ -46,11 +28,11 @@ update_external_git_repo() {
         git -C "${1}" add ${ADDED_MODIFIED[*]}
     }
     (( ${#deleted[*]} )) &&
-        basenames=$(basename -a ${deleted[*]}) &&
+        basenames=$(basename --multiple ${deleted[*]}) &&
         print_git_progress "rm" "${basenames}" &&
-        git -C "${1}" rm -q $(echo ${basenames})
+        git -C "${1}" rm --quiet $(echo ${basenames})
     print_git_progress "commit"
-    git -C "${1}" commit -m "${COMMIT_MESSAGE}"
+    git -C "${1}" commit --message="${COMMIT_MESSAGE}"
 }
 
 get_diff_output() {

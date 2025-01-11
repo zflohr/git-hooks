@@ -8,22 +8,6 @@
 # Updates to the external repositories occur via pushes to upstream
 # branches on tracked remote repositories.
 
-print_git_progress() {
-    local progress_msg
-    case "${1}" in
-        'fetch')
-            progress_msg="Fetching refs from: ${2}"
-        ;;
-        'rev-list')
-            progress_msg="${2} ahead of ${3} by ${4} commits."
-        ;;
-        'push')
-            progress_msg="Pushing to ${2}"
-        ;;
-    esac
-    print_message 0 "cyan" "${progress_msg}"
-}
-
 push_to_remote_repo() {
     local -r REMOTE_URL=$(
         git -C "${1}" remote get-url $(

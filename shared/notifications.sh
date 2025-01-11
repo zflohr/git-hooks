@@ -50,67 +50,44 @@ print_message() {
 terminate() {
     local error_msg
     local -i exit_status=1
-    case "${FUNCNAME[1]}" in
+    case "${1}" in
         'check_binaries')
             error_msg="You must install the following tools "
             error_msg+="to run this script: ${1}"
         ;;
-        'check_conflicting_bootstrap_params')
-            error_msg="Illegal combination of options: ${1}"
-        ;;
-        'check_root_user')
-            error_msg="This script must be run as root!"
-        ;;
-        'parse_bootstrap_params')
-            error_msg="Terminating..."
-            exit_status=${1}
-        ;;
-        'download_public_key')
-            error_msg="Could not download the OpenPGP public key from ${1}"
-            error_msg+="\nTerminating..."
-            exit_status=${2}
-        ;;
-        'download_source')
-            error_msg="Could not download ${1} from ${2}"
-            error_msg+="\nTerminating..."
+        'git')
+            error_msg="\"git ${2}\" failed!\nTerminating..."
             exit_status=${3}
-        ;;
-        'apt_get')
-            error_msg="\"apt-get ${1}\" failed!\nTerminating..."
-            exit_status=${2}
-        ;;
-        'check_distributor_id')
-            error_msg="This script is not compatible with the "
-            error_msg+="following distribution: ${1}"
-        ;;
-        'check_matching_package_versions')
-            error_msg="Could not find matching versions for the "
-            error_msg+="following packages: ${*:1}\nTerminating..."
-        ;;
-        *)
-            case "${1}" in
-                'git')
-                    error_msg="\"git ${2}\" failed!\nTerminating..."
-                    exit_status=${3}
-                ;;
-                'configure')
-                    error_msg="Something went wrong during the configuration "
-                    error_msg+="of ${2} source code!\nTerminating..."
-                    exit_status=${3}
-                ;;
-                'make')
-                    error_msg="Something went wrong during \"make\"!"
-                    error_msg+="\nTerminating..."
-                    exit_status=${2}
-                ;;
-                'make test')
-                    error_msg="Something went wrong during \"make test\"!"
-                    error_msg+="\nTerminating..."
-                    exit_status=${2}
-                ;;
-            esac
         ;;
     esac
     print_message 1 "red" "${error_msg}"
     exit ${exit_status}
 }
+
+print_git_progress() {
+    local progress_msg
+    case "${1}" in
+        'add')
+            progress_msg="Adding the following files to "
+            progress_msg+="the staging index:\n${2}"
+        ;;
+        'commit')
+            progress_msg="Creating a new commit..."
+        ;;
+        'rm')
+            progress_msg="Removing the following files from the staging "
+            progress_msg+="index and the working tree:\n${2}"
+        ;;
+        'fetch')
+            progress_msg="Fetching refs from: ${2}"
+        ;;
+        'rev-list')
+            progress_msg="${2} ahead of ${3} by ${4} commits."
+        ;;
+        'push')
+            progress_msg="Pushing to ${2}"
+        ;;
+    esac
+    print_message 0 "cyan" "${progress_msg}"
+}
+
