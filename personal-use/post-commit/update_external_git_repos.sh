@@ -3,7 +3,7 @@
 # Author: Zachary Flohr
 #
 # Update the commit history of Git repositories that exist outside of
-# the Git repository that contains this script. The external
+# the Git repository that contains this git-hook script. The external
 # repositories to be updated and the source directories of the main Git
 # repository whence the external repositories receive their updates are
 # specified in a script that gets sourced herein. Updates to the
@@ -68,7 +68,7 @@ get_diff_output() {
 }
 
 main() {
-    . shared/external_git_repos.sh; . shared/notifications.sh
+    . ../shared/external_git_repos.sh; . ../shared/notifications.sh
     for git_repo in "${!EXTERNAL_REPO_MAP[@]}"; do
         get_diff_output "${git_repo}"
     done

@@ -29,7 +29,7 @@ push_to_remote_repo() {
 }
 
 main() {
-    . shared/external_git_repos.sh; . shared/notifications.sh
+    . ../shared/external_git_repos.sh; . ../shared/notifications.sh
     for git_repo in "${!GIT_REPO_TO_SOURCE_DIR_MAP[@]}" "$(pwd)/"; do
         push_to_remote_repo "${git_repo}"
     done
