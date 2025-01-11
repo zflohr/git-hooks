@@ -1,9 +1,11 @@
 # Git Hooks
 
-These are custom Bash scripts that are executed during the invocation of Git
-hooks. This entire repository is updated by the Git hooks of other Git
-repositories, whose names are the names of the top-level directories herein. The
-Git hooks that update this repository are located herein.
+These are Bash scripts that are executed during the invocation of Git hooks.
+The names of the top-level directories in this repository indicate whence the
+scripts originate (i.e., all files in [personal-use](personal-use/) originate
+from this repository and are used by Git hooks of other repositories on my local
+machine to automate workflows for repositories whose remotes belong to my
+personal GitHub account.
 
 ## Contributing
 
