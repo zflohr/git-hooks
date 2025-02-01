@@ -3,7 +3,7 @@
 # Author: Zachary Flohr
 #
 # Update remote references of Git repositories that exist outside of
-# the Git repository tht contains this script. The external repositories
+# the Git repository that contains this script. The external repositories
 # to be updated are specified in a script that gets sourced herein.
 # Updates to the external repositories occur via pushes to upstream
 # branches on tracked remote repositories.
