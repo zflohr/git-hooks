@@ -13,7 +13,6 @@
 update_external_git_repo() {
     local -r COMMIT_MESSAGE=$(git log --pretty=format:"%B" -1 HEAD)
     local -ar ADDED_MODIFIED=(${added[*]} ${modified[*]})
-    local basenames
     print_message 0 "gold" "In git repository ${1}"
     (( ${#added[*]} )) && {
         pushd ${1} > /dev/null
@@ -28,9 +27,8 @@ update_external_git_repo() {
         git -C "${1}" add ${ADDED_MODIFIED[*]}
     }
     (( ${#deleted[*]} )) &&
-        basenames=$(basename --multiple ${deleted[*]}) &&
-        print_git_progress "rm" "${basenames}" &&
-        git -C "${1}" rm --quiet $(echo ${basenames})
+        print_git_progress "rm" "${deleted[*]}" &&
+        git -C "${1}" rm --quiet "${deleted[@]}"
     print_git_progress "commit"
     git -C "${1}" commit --message="${COMMIT_MESSAGE}"
 }
