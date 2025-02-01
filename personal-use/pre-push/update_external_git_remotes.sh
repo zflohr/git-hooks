@@ -22,18 +22,21 @@ push_to_remote_repo() {
         "${REFNAMES[1]}" "${SYM_DIFF[0]}"
     ! (( ${SYM_DIFF[0]} )) || {
         print_git_progress "push" "${REMOTE_URL}"
-        [ "${1}" == "$(pwd)/" ] || {
-            git -C "${1}" push || terminate "git" "push" $?
-        }
+        [ "${1}" == "$(pwd)/" ] || git -C "${1}" push ||
+            terminate "git" "push" $?
     }
 }
 
 main() {
     . $(dirname ${0})/../shared/external_git_repos.sh
     . $(dirname ${0})/../shared/notifications.sh
-    for git_repo in "${!EXTERNAL_REPO_MAP[@]}" "$(pwd)/"; do
-        push_to_remote_repo "${git_repo}"
+    for git_repo in "${!EXTERNAL_REPO_MAP[@]}"; do
+        [ -d ${git_repo} ] && [ -d ${EXTERNAL_REPO_MAP["${git_repo}"]} ] &&
+            [ $(git -C "${EXTERNAL_REPO_MAP["${git_repo}"]}" rev-parse \
+                --show-toplevel) == $(git rev-parse --show-toplevel) ] &&
+            push_to_remote_repo "${git_repo}"
     done
+    push_to_remote_repo "$(pwd)/"
 }
 
 main
